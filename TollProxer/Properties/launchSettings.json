@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "TollProxer": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:58600;http://localhost:58601"
+    }
+  }
+}
