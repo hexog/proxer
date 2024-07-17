@@ -25,6 +25,10 @@ static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions
         return;
     }
 
+    var allowedHeaders = context.Request.Headers.TryGetValue("Toll-Allowed-Headers", out var allowed)
+        ? new HashSet<string>(new[] { allowed.First() ?? string.Empty })
+        : options.Value.PassHeaderSet;
+    
     var proxyHost = proxyHostHeader.ToString();
     if (proxyHostHeader.Count != 1)
     {
@@ -51,7 +55,7 @@ static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions
 
     foreach (var header in context.Request.Headers)
     {
-        if (options.Value.PassHeaders.Contains(header.Key))
+        if (allowedHeaders.Contains(header.Key))
         {
             request.Headers.Add(header.Key, header.Value.ToString());
         }
