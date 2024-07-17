@@ -68,16 +68,25 @@ static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions
         }
     }
 
+    var fullLog = context.Request.Headers.ContainsKey("Toll-Full-Log");
+    
     using var response = await httpClient.SendAsync(request);
 
     logger.LogInformation("Sent request to {Host}", proxyHost);
+
+    var responseStr = await response.Content.ReadAsStringAsync();
+    if (fullLog)
+    {
+        logger.LogInformation($"Response {response.StatusCode}");
+        logger.LogInformation($"Response Body {responseStr}");
+    }
 
     context.Response.StatusCode = (int)response.StatusCode;
 
     context.Response.ContentLength = response.Content.Headers.ContentLength;
     context.Response.ContentType = response.Content.Headers.ContentType?.ToString();
     await context.Response.StartAsync();
-    await response.Content.CopyToAsync(context.Response.Body);
+    await context.Response.WriteAsync(responseStr);
     await context.Response.CompleteAsync();
 }
 
