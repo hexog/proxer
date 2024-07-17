@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using TollProxer;
 
+const string ver = "1.0";
+Console.WriteLine($"Start configuring TollProxer {ver}");
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOptions<ProxyOptions>()
@@ -12,10 +15,14 @@ var app = builder.Build();
 
 app.Map("{**slug}", HandleProxy);
 
+Console.WriteLine($"Run TollProxer {ver}");
+
 app.Run();
 
 static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions> options, ILoggerFactory loggerFactory, HttpClient httpClient)
 {
+    Console.WriteLine($"Handle request");
+    
     var logger = loggerFactory.CreateLogger(nameof(HandleProxy));
 
     if (!context.Request.Headers.TryGetValue("Toll-Proxed-Destination-Host", out var proxyHostHeader))
