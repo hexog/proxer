@@ -18,8 +18,7 @@ static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions
 {
     var logger = loggerFactory.CreateLogger(nameof(HandleProxy));
 
-    const string destinationHeader = "Toll-Proxed-Destination-Host";
-    if (!context.Request.Headers.TryGetValue(destinationHeader, out var proxyHostHeader))
+    if (!context.Request.Headers.TryGetValue("Toll-Proxed-Destination-Host", out var proxyHostHeader))
     {
         logger.LogInformation("No destination domain proxy is passed");
         context.Response.StatusCode = 400;
@@ -52,7 +51,7 @@ static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions
 
     foreach (var header in context.Request.Headers)
     {
-        if (destinationHeader != header.Key)
+        if (options.Value.PassHeaders.Contains(header.Key))
         {
             request.Headers.Add(header.Key, header.Value.ToString());
         }
