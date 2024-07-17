@@ -27,7 +27,7 @@ static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions
     }
 
     var proxyHost = proxyHostHeader.ToString();
-    if (proxyHostHeader.Count != 1 || !options.Value.AllowedDestinationHostSet.Contains(proxyHost))
+    if (proxyHostHeader.Count != 1)
     {
         logger.LogInformation("Disallowed domain name");
         context.Response.StatusCode = 400;
