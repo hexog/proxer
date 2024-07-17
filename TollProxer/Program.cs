@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using TollProxer;
 
-const string ver = "1.0";
+const string ver = "1.1";
 Console.WriteLine($"Start configuring TollProxer {ver}");
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +17,7 @@ app.Map("{**slug}", HandleProxy);
 
 Console.WriteLine($"Run TollProxer {ver}");
 
-app.Run();
+app.Run(@"http://*:5000");
 
 static async Task HandleProxy(HttpContext context, IOptionsSnapshot<ProxyOptions> options, ILoggerFactory loggerFactory, HttpClient httpClient)
 {
